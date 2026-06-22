@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Atarsa</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100">
+<div id="root" class="min-h-screen"></div>
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+// --- Supabase ayarlari (publishable key on yuzde acik olabilir, sorun degil) ---
+const SUPABASE_URL = 'https://oktaxuwpsukixzxhcgph.supabase.co'
+const SUPABASE_KEY = 'sb_publishable_x9H8iOFaBmgODmQR-pTnbg_G4CK1G89'
+
+let supabase = null
+try { if (SUPABASE_URL && SUPABASE_KEY) supabase = createClient(SUPABASE_URL, SUPABASE_KEY) } catch (e) { supabase = null }
+const ready = !!supabase
+
+const PROVINCES = [
+  {"plaka":1,"il":"Adana"},{"plaka":2,"il":"Adıyaman"},{"plaka":3,"il":"Afyonkarahisar"},
+  {"plaka":4,"il":"Ağrı"},{"plaka":5,"il":"Amasya"},{"plaka":6,"il":"Ankara"},
+  {"plaka":7,"il":"Antalya"},{"plaka":8,"il":"Artvin"},{"plaka":9,"il":"Aydın"},
+  {"plaka":10,"il":"Balıkesir"},{"plaka":11,"il":"Bilecik"},{"plaka":12,"il":"Bingöl"},
+  {"plaka":13,"il":"Bitlis"},{"plaka":14,"il":"Bolu"},{"plaka":15,"il":"Burdur"},
+  {"plaka":16,"il":"Bursa"},{"plaka":17,"il":"Çanakkale"},{"plaka":18,"il":"Çankırı"},
+  {"plaka":19,"il":"Çorum"},{"plaka":20,"il":"Denizli"},{"plaka":21,"il":"Diyarbakır"},
+  {"plaka":22,"il":"Edirne"},{"plaka":23,"il":"Elazığ"},{"plaka":24,"il":"Erzincan"},
+  {"plaka":25,"il":"Erzurum"},{"plaka":26,"il":"Eskişehir"},{"plaka":27,"il":"Gaziantep"},
+  {"plaka":28,"il":"Giresun"},{"plaka":29,"il":"Gümüşhane"},{"plaka":30,"il":"Hakkari"},
+  {"plaka":31,"il":"Hatay"},{"plaka":32,"il":"Isparta"},{"plaka":33,"il":"Mersin"},
+  {"plaka":34,"il":"İstanbul"},{"plaka":35,"il":"İzmir"},{"plaka":36,"il":"Kars"},
+  {"plaka":37,"il":"Kastamonu"},{"plaka":38,"il":"Kayseri"},{"plaka":39,"il":"Kırklareli"},
+  {"plaka":40,"il":"Kırşehir"},{"plaka":41,"il":"Kocaeli"},{"plaka":42,"il":"Konya"},
+  {"plaka":43,"il":"Kütahya"},{"plaka":44,"il":"Malatya"},{"plaka":45,"il":"Manisa"},
+  {"plaka":46,"il":"Kahramanmaraş"},{"plaka":47,"il":"Mardin"},{"plaka":48,"il":"Muğla"},
+  {"plaka":49,"il":"Muş"},{"plaka":50,"il":"Nevşehir"},{"plaka":51,"il":"Niğde"},
+  {"plaka":52,"il":"Ordu"},{"plaka":53,"il":"Rize"},{"plaka":54,"il":"Sakarya"},
+  {"plaka":55,"il":"Samsun"},{"plaka":56,"il":"Siirt"},{"plaka":57,"il":"Sinop"},
+  {"plaka":58,"il":"Sivas"},{"plaka":59,"il":"Tekirdağ"},{"plaka":60,"il":"Tokat"},
+  {"plaka":61,"il":"Trabzon"},{"plaka":62,"il":"Tunceli"},{"plaka":63,"il":"Şanlıurfa"},
+  {"plaka":64,"il":"Uşak"},{"plaka":65,"il":"Van"},{"plaka":66,"il":"Yozgat"},
+  {"plaka":67,"il":"Zonguldak"},{"plaka":68,"il":"Aksaray"},{"plaka":69,"il":"Bayburt"},
+  {"plaka":70,"il":"Karaman"},{"plaka":71,"il":"Kırıkkale"},{"plaka":72,"il":"Batman"},
+  {"plaka":73,"il":"Şırnak"},{"plaka":74,"il":"Bartın"},{"plaka":75,"il":"Ardahan"},
+  {"plaka":76,"il":"Iğdır"},{"plaka":77,"il":"Yalova"},{"plaka":78,"il":"Karabük"},
+  {"plaka":79,"il":"Kilis"},{"plaka":80,"il":"Osmaniye"},{"plaka":81,"il":"Düzce"}
+]
+const RANKS = [
+  "Er",
+  "Onbaşı",
+  "Çavuş",
+  "Uzman Çavuş",
+  "Astsubay",
+  "Asteğmen",
+  "Teğmen",
+  "Üsteğmen",
+  "Yüzbaşı"
+]
+const QUOTES = [
+  "Her geçen gün, evine bir adım daha yakınsın.",
+  "Zaman akıp gidiyor; sen sadece sabret ve saymaya devam et.",
+  "Bugün dünden bir gün daha az kaldı.",
+  "Zor günler geçer, geriye sadece anılar ve gurur kalır.",
+  "Sabreden derviş muradına ermiş.",
+  "Bu yol bir gün bitecek, sen yeter ki dik dur.",
+  "Bugünü tamamla, yarın daha kolay gelecek.",
+  "Güçlü kalmak, bitiş çizgisini görenlere yakışır.",
+  "Geride bıraktığın her gün bir zaferdir.",
+  "Yorulduğunda hatırla: kalan günler azalıyor.",
+  "Disiplin bugünün yükü, yarının gücüdür.",
+  "Sabır acıdır ama meyvesi tatlıdır.",
+  "Bir gün daha bitti, terhise bir adım daha.",
+  "Cesaret, korkunun değil; devam etmenin adıdır.",
+  "Her sabah yeni bir gün, eve bir gün daha yakın.",
+  "Bugünün zorluğu, yarının hikâyesi olacak.",
+  "Vakit su gibi akar; sen akışına güven.",
+  "Dayanmak da bir başarıdır, sen başarıyorsun.",
+  "Sonu olan her şeye sabredilir.",
+  "Bugün attığın adım, seni hedefe yaklaştırıyor.",
+  "Zorluk geçici, gurur kalıcıdır.",
+  "Saymak güzel; çünkü her sayı bir ilerlemedir.",
+  "Bugünü de geçirdin, helal olsun sana.",
+  "En karanlık gece bile sabaha çıkar.",
+  "Pes etmek yok; bitiş çizgisi göründü bile.",
+  "Güçlü olan dayanandır, sen dayanıyorsun.",
+  "Bugün bir damla, yarın bir derya.",
+  "Sabrın sonu selamettir.",
+  "Her veda, yeni bir başlangıcın habercisidir.",
+  "Yolun sonu görünüyor; sakın durma."
+]
+
+const STORAGE_KEY = 'atarsa-profile'
+const empty = { ad:'', soyad:'', katilisTarihi:'', bitisTarihi:'', izinHakki:0, egitimYeri:'', rutbe:'', ilPlaka:0 }
+let profile = { ...empty }
+let session = null
+const root = document.getElementById('root')
+
+function dayOfYear(d){ const s = new Date(d.getFullYear(),0,0); return Math.floor((d - s)/86400000) }
+function quoteOfDay(){ return QUOTES.length ? QUOTES[dayOfYear(new Date()) % QUOTES.length] : '' }
+function attr(v){ return String(v ?? '').replace(/&/g,'&amp;').replace(/"/g,'&quot;') }
+
+function rowToProfile(r){
+  return { ad:r.ad||'', soyad:r.soyad||'', katilisTarihi:r.katilis_tarihi||'', bitisTarihi:r.bitis_tarihi||'',
+    izinHakki:r.izin_hakki||0, egitimYeri:r.egitim_yeri||'', rutbe:r.rutbe||'', ilPlaka:r.il_plaka||0 }
+}
+function profileToRow(p){
+  return { ad:p.ad||null, soyad:p.soyad||null, katilis_tarihi:p.katilisTarihi||null, bitis_tarihi:p.bitisTarihi||null,
+    izin_hakki:p.izinHakki||0, egitim_yeri:p.egitimYeri||null, rutbe:p.rutbe||null, il_plaka:p.ilPlaka||null }
+}
+
+async function loadProfile(){
+  if (ready && session) {
+    const { data, error } = await supabase.from('profiles').select('*').eq('id', session.user.id).maybeSingle()
+    profile = (!error && data) ? rowToProfile(data) : { ...empty }
+  } else {
+    const saved = localStorage.getItem(STORAGE_KEY)
+    profile = saved ? { ...empty, ...JSON.parse(saved) } : { ...empty }
+  }
+}
+async function saveProfile(){
+  if (ready && session) {
+    const { error } = await supabase.from('profiles').upsert({ id: session.user.id, ...profileToRow(profile), updated_at: new Date().toISOString() })
+    if (error) throw error
+    return 'Veritabanina kaydedildi.'
+  }
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(profile))
+  return 'Tarayiciya kaydedildi.'
+}
+
+function countdownHTML(){
+  const a = profile.katilisTarihi, b = profile.bitisTarihi
+  if (!a || !b) return '<div class="rounded-xl border border-slate-700 bg-slate-800 p-5 text-slate-400">Sayac icin katilis ve bitis tarihini gir.</div>'
+  const start = new Date(a).getTime(), end = new Date(b).getTime(), now = Date.now()
+  const total = Math.max(end - start, 1)
+  const elapsed = Math.min(Math.max(now - start, 0), total)
+  const pct = Math.round((elapsed/total)*100)
+  const remaining = Math.max(Math.ceil((end-now)/86400000), 0)
+  return `<div class="rounded-xl border border-slate-700 bg-slate-800 p-5">
+      <div class="flex items-end justify-between">
+        <div><p class="text-xs uppercase tracking-wider text-slate-400">Kalan Gun</p>
+        <p class="text-4xl font-bold">${remaining}</p></div>
+        <p class="text-2xl font-semibold text-emerald-400">%${pct}</p>
+      </div>
+      <div class="mt-4 h-3 w-full overflow-hidden rounded-full bg-slate-700">
+        <div class="h-full rounded-full bg-emerald-500 transition-all" style="width:${pct}%"></div>
+      </div></div>`
+}
+
+function field(id,label,value,type){
+  type = type || 'text'
+  return `<div><label class="mb-1 block text-xs text-slate-400">${label}</label>
+    <input id="${id}" type="${type}" value="${attr(value)}" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-sm outline-none focus:border-emerald-500" /></div>`
+}
+
+function profileFormHTML(){
+  const rankOpts = ['<option value="">Sec...</option>'].concat(RANKS.map(r => `<option value="${attr(r)}" ${r===profile.rutbe?'selected':''}>${r}</option>`)).join('')
+  const ilOpts = ['<option value="0">Sec...</option>'].concat(PROVINCES.map(p => `<option value="${p.plaka}" ${p.plaka===profile.ilPlaka?'selected':''}>${p.plaka} - ${p.il}</option>`)).join('')
+  return `<div class="rounded-xl border border-slate-700 bg-slate-800 p-5">
+    <h2 class="mb-4 text-lg font-semibold">Bilgilerim</h2>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      ${field('ad','Adi',profile.ad)}
+      ${field('soyad','Soyadi',profile.soyad)}
+      ${field('katilisTarihi','Katilis Tarihi',profile.katilisTarihi,'date')}
+      ${field('bitisTarihi','Bitis Tarihi',profile.bitisTarihi,'date')}
+      ${field('izinHakki','Izin Hakki (gun)',profile.izinHakki,'number')}
+      ${field('egitimYeri','Egitim Yeri',profile.egitimYeri)}
+      <div><label class="mb-1 block text-xs text-slate-400">Rutbe</label>
+        <select id="rutbe" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-sm outline-none focus:border-emerald-500">${rankOpts}</select></div>
+      <div><label class="mb-1 block text-xs text-slate-400">Il</label>
+        <select id="ilPlaka" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-sm outline-none focus:border-emerald-500">${ilOpts}</select></div>
+    </div>
+    <div class="mt-5 flex items-center justify-between">
+      <span id="status" class="text-sm text-emerald-400"></span>
+      <button id="saveBtn" class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium hover:bg-emerald-500">Kaydet</button>
+    </div></div>`
+}
+
+function readForm(){
+  const g = id => document.getElementById(id)
+  profile.ad = g('ad').value
+  profile.soyad = g('soyad').value
+  profile.katilisTarihi = g('katilisTarihi').value
+  profile.bitisTarihi = g('bitisTarihi').value
+  profile.izinHakki = Number(g('izinHakki').value) || 0
+  profile.egitimYeri = g('egitimYeri').value
+  profile.rutbe = g('rutbe').value
+  profile.ilPlaka = Number(g('ilPlaka').value) || 0
+}
+
+function renderDashboard(){
+  const q = quoteOfDay()
+  root.innerHTML = `
+    <header class="flex items-center justify-between border-b border-slate-700 px-6 py-4">
+      <div><h1 class="text-2xl font-bold tracking-wide">Atarsa</h1>
+      <p class="text-sm text-slate-400">Askerlik takip uygulamasi</p></div>
+      ${session ? '<button id="logoutBtn" class="rounded-lg bg-slate-700 px-3 py-1 text-sm hover:bg-slate-600">Cikis</button>' : ''}
+    </header>
+    <main class="mx-auto max-w-3xl space-y-6 px-6 py-8">
+      ${q ? `<div class="rounded-xl border border-slate-700 bg-slate-800 p-5"><p class="text-xs uppercase tracking-wider text-slate-400">Gunun Sozu</p><p class="mt-2 text-lg italic">${q}</p></div>` : ''}
+      <div id="countdown">${countdownHTML()}</div>
+      ${profileFormHTML()}
+      ${ready ? '' : '<p class="text-xs text-slate-500">Not: Supabase ayarli degil; bilgiler bu tarayicida saklaniyor.</p>'}
+    </main>`
+  const refresh = () => { readForm(); document.getElementById('countdown').innerHTML = countdownHTML() }
+  document.getElementById('katilisTarihi').addEventListener('change', refresh)
+  document.getElementById('bitisTarihi').addEventListener('change', refresh)
+  document.getElementById('saveBtn').addEventListener('click', async () => {
+    readForm()
+    const s = document.getElementById('status')
+    try { s.className='text-sm text-emerald-400'; s.textContent = await saveProfile(); document.getElementById('countdown').innerHTML = countdownHTML() }
+    catch(e){ s.className='text-sm text-red-400'; s.textContent = 'Hata: ' + (e.message || 'kaydedilemedi') }
+    setTimeout(()=>{ s.textContent='' }, 3000)
+  })
+  if (session) document.getElementById('logoutBtn').addEventListener('click', async () => { await supabase.auth.signOut() })
+}
+
+function renderAuth(){
+  let mode = 'login'
+  function draw(msg){
+    msg = msg || ''
+    root.innerHTML = `
+    <main class="mx-auto max-w-sm px-6 py-16">
+      <h1 class="mb-1 text-2xl font-bold tracking-wide">Atarsa</h1>
+      <p class="mb-6 text-sm text-slate-400">${mode==='login'?'Giris yap':'Kayit ol'}</p>
+      <div class="space-y-3 rounded-xl border border-slate-700 bg-slate-800 p-6">
+        <input id="email" type="email" placeholder="E-posta" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-sm outline-none focus:border-emerald-500" />
+        <input id="password" type="password" placeholder="Sifre" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-sm outline-none focus:border-emerald-500" />
+        <button id="go" class="w-full rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium hover:bg-emerald-500">${mode==='login'?'Giris Yap':'Kayit Ol'}</button>
+        ${msg?`<p class="text-sm text-amber-400">${msg}</p>`:''}
+        <button id="toggle" class="w-full text-sm text-slate-400 hover:text-slate-200">${mode==='login'?'Hesabin yok mu? Kayit ol':'Zaten hesabin var mi? Giris yap'}</button>
+      </div></main>`
+    document.getElementById('go').addEventListener('click', submit)
+    document.getElementById('password').addEventListener('keydown', e => { if(e.key==='Enter') submit() })
+    document.getElementById('toggle').addEventListener('click', () => { mode = mode==='login'?'signup':'login'; draw() })
+  }
+  async function submit(){
+    const email = document.getElementById('email').value
+    const password = document.getElementById('password').value
+    try {
+      if (mode==='signup'){ const { error } = await supabase.auth.signUp({ email, password }); if (error) throw error; draw('Kayit olustu. E-postani dogrula, sonra giris yap.') }
+      else { const { error } = await supabase.auth.signInWithPassword({ email, password }); if (error) throw error }
+    } catch(e){ draw(e.message || 'Hata olustu.') }
+  }
+  draw()
+}
+
+async function render(){
+  if (ready && !session) { renderAuth(); return }
+  await loadProfile()
+  renderDashboard()
+}
+
+if (ready) {
+  const { data } = await supabase.auth.getSession()
+  session = data.session
+  supabase.auth.onAuthStateChange(async (_e, s) => { session = s; await render() })
+}
+await render()
+</script>
+</body>
+</html>
