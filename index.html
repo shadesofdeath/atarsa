@@ -2,21 +2,158 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Atarsa</title>
-<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#090c08; --bg2:#0f140c; --card:#141a10; --card2:#11160d;
+  --line:#27331c; --line2:#1c2615;
+  --gold:#c9a93f; --gold-b:#ecd79a; --gold-d:#9a8230;
+  --green:#54683a; --text:#f0f3ea; --muted:#8d9a7f; --good:#86d27e; --bad:#e2796f;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);
+  min-height:100vh;
+  background-image:radial-gradient(120% 60% at 50% -10%, #1b2412 0%, rgba(12,16,9,0) 60%);
+}
+.app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative}
+.screen{flex:1;padding:18px 18px 110px;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.up{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.18em}
+.num{font-family:'Oswald',sans-serif;font-variant-numeric:tabular-nums}
+
+/* topbar */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.who{display:flex;align-items:center;gap:11px}
+.avatar{position:relative;width:46px;height:46px;border-radius:13px;background:linear-gradient(160deg,#2a371b,#19200f);
+  display:flex;align-items:center;justify-content:center;border:1px solid var(--line)}
+.avatar svg{width:22px;height:22px;color:var(--gold-b)}
+.dot{position:absolute;right:-2px;top:-2px;width:12px;height:12px;border-radius:50%;background:var(--good);border:2px solid var(--bg)}
+.who .lbl{font-size:10px;color:var(--gold);letter-spacing:.2em}
+.who .nm{font-size:17px;font-weight:600;margin-top:1px}
+.iconbtn{width:42px;height:42px;border-radius:12px;background:var(--card);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;color:var(--gold-b);cursor:pointer}
+.iconbtn svg{width:19px;height:19px}
+
+/* ring */
+.ringwrap{position:relative;width:264px;height:264px;margin:8px auto 6px}
+.ringwrap svg{width:100%;height:100%;display:block}
+.ringcenter{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ringcenter .top{font-size:12px;color:var(--gold);letter-spacing:.34em;margin-bottom:2px}
+.ringcenter .big{font-family:'Oswald',sans-serif;font-size:84px;line-height:.9;font-weight:600}
+.pill{margin-top:8px;font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:999px;
+  padding:5px 14px;letter-spacing:.22em}
+
+/* hms */
+.hms-card{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--line);
+  border-radius:18px;padding:16px;margin-top:14px}
+.hms-card .cap{text-align:center;font-size:10px;color:var(--gold);letter-spacing:.26em;margin-bottom:12px}
+.hms{display:flex;align-items:center;justify-content:center;gap:6px}
+.hms .seg{display:flex;flex-direction:column;align-items:center;min-width:74px}
+.hms .v{font-family:'Oswald',sans-serif;font-size:42px;font-weight:600;line-height:1}
+.hms .seg:last-child .v{color:var(--muted)}
+.hms .k{font-size:9px;color:var(--muted);letter-spacing:.2em;margin-top:5px}
+.hms .colon{font-family:'Oswald',sans-serif;font-size:32px;color:var(--gold-d);transform:translateY(-7px)}
+
+/* mini cards */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.mini{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:16px;padding:14px}
+.mini .h{display:flex;align-items:center;gap:7px;color:var(--gold);font-size:10px;letter-spacing:.2em}
+.mini .h svg{width:15px;height:15px}
+.mini .sub{font-size:10px;color:var(--muted);letter-spacing:.16em;margin-top:11px}
+.mini .val{font-family:'Oswald',sans-serif;font-size:30px;font-weight:600;margin-top:2px}
+.mini .small{font-size:18px}
+.uline{height:3px;width:46px;background:linear-gradient(90deg,var(--gold),transparent);border-radius:2px;margin-top:7px}
+.season{display:inline-flex;align-items:center;gap:5px;color:var(--gold-b);font-size:11px;font-style:italic;margin-top:7px}
+
+.quote{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:12px}
+.quote .h{color:var(--gold);font-size:10px;letter-spacing:.22em}
+.quote p{margin:8px 0 0;font-size:15px;font-style:italic;line-height:1.5}
+
+/* sections / forms */
+.sec-title{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.14em;font-size:20px;margin:6px 0 16px}
+.card{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:18px;padding:18px}
+.field{margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+label.lab{display:block;font-size:11px;color:var(--gold);letter-spacing:.12em;margin-bottom:6px}
+input,select{width:100%;background:#0c1008;border:1px solid var(--line);border-radius:11px;color:var(--text);
+  padding:12px 13px;font-size:15px;font-family:inherit;outline:none;transition:border .15s}
+input:focus,select:focus{border-color:var(--gold-d)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn{width:100%;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;
+  background:linear-gradient(180deg,var(--gold-b),var(--gold));color:#1a1605;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;gap:9px;transition:opacity .15s}
+.btn:disabled{opacity:.65;cursor:default}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
+.btn.danger{background:transparent;border:1px solid #4a2a26;color:var(--bad)}
+.spinner{width:17px;height:17px;border:2px solid rgba(26,22,5,.35);border-top-color:#1a1605;border-radius:50%;
+  animation:spin .7s linear infinite}
+.btn.ghost .spinner,.btn.danger .spinner{border-color:rgba(255,255,255,.25);border-top-color:#fff}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.list{margin-top:6px;max-height:48vh;overflow:auto;border:1px solid var(--line);border-radius:14px}
+.list .it{display:flex;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--line2);font-size:14px}
+.list .it:last-child{border-bottom:none}
+.list .it.act{background:#18200f;color:var(--gold-b)}
+.list .it .pk{color:var(--gold);font-family:'Oswald',sans-serif;font-weight:600}
+.search{margin-bottom:10px}
+
+.summary{display:flex;gap:10px;margin-bottom:14px}
+.summary .s{flex:1;background:#0c1008;border:1px solid var(--line);border-radius:13px;padding:12px}
+.summary .s .k{font-size:10px;color:var(--gold);letter-spacing:.14em}
+.summary .s .v{font-size:15px;font-weight:600;margin-top:5px}
+
+.prof-head{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.prof-head .av{width:58px;height:58px;border-radius:16px;background:linear-gradient(160deg,#2a371b,#19200f);
+  display:flex;align-items:center;justify-content:center;border:1px solid var(--line);color:var(--gold-b);font-family:'Oswald';font-size:24px}
+.muted{color:var(--muted)}
+.hint{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.5}
+
+/* bottom nav */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:20}
+.nav-inner{max-width:480px;margin:0 auto;background:rgba(10,14,8,.9);backdrop-filter:blur(12px);
+  border-top:1px solid var(--line);display:flex;padding:9px 6px calc(9px + env(safe-area-inset-bottom))}
+.tab{flex:1;background:none;border:none;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:5px 0;cursor:pointer;font-family:inherit;font-size:10px;letter-spacing:.04em}
+.tab svg{width:22px;height:22px}
+.tab.active{color:var(--gold-b)}
+
+/* auth */
+.auth{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:26px;max-width:420px;margin:0 auto}
+.brand{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.3em;font-size:34px;text-align:center}
+.brand-sub{text-align:center;color:var(--muted);font-size:13px;margin:6px 0 26px;letter-spacing:.06em}
+.tabsw{display:flex;background:#0c1008;border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:18px}
+.tabsw button{flex:1;border:none;background:none;color:var(--muted);padding:10px;border-radius:9px;font-family:inherit;font-size:14px;cursor:pointer}
+.tabsw button.on{background:linear-gradient(180deg,var(--gold-b),var(--gold));color:#1a1605;font-weight:600}
+.msg{font-size:13px;margin-top:12px;text-align:center}
+.msg.err{color:var(--bad)}.msg.ok{color:var(--good)}
+
+/* toast */
+#toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:50;display:flex;flex-direction:column;gap:8px;align-items:center}
+.toast{background:#18200f;border:1px solid var(--line);color:var(--gold-b);padding:11px 18px;border-radius:12px;
+  font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.5);animation:pop .25s ease}
+.toast.err{border-color:#4a2a26;color:var(--bad)}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.empty{text-align:center;color:var(--muted);padding:30px 10px}
+.empty .b{font-family:'Oswald';font-size:18px;color:var(--text);margin-bottom:8px;letter-spacing:.1em}
+</style>
 </head>
-<body class="bg-slate-900 text-slate-100">
-<div id="root" class="min-h-screen"></div>
+<body>
+<div id="root"></div>
+<div id="toast"></div>
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-// --- Supabase ayarlari (publishable key on yuzde acik olabilir, sorun degil) ---
 const SUPABASE_URL = 'https://oktaxuwpsukixzxhcgph.supabase.co'
 const SUPABASE_KEY = 'sb_publishable_x9H8iOFaBmgODmQR-pTnbg_G4CK1G89'
+const SITE_URL = 'https://shadesofdeath.github.io/atarsa/'
 
 let supabase = null
-try { if (SUPABASE_URL && SUPABASE_KEY) supabase = createClient(SUPABASE_URL, SUPABASE_KEY) } catch (e) { supabase = null }
+try { if (SUPABASE_URL && SUPABASE_KEY) supabase = createClient(SUPABASE_URL, SUPABASE_KEY) } catch(e){ supabase=null }
 const ready = !!supabase
 
 const PROVINCES = [
@@ -92,171 +229,265 @@ const QUOTES = [
   "Yolun sonu görünüyor; sakın durma."
 ]
 
-const STORAGE_KEY = 'atarsa-profile'
-const empty = { ad:'', soyad:'', katilisTarihi:'', bitisTarihi:'', izinHakki:0, egitimYeri:'', rutbe:'', ilPlaka:0 }
-let profile = { ...empty }
-let session = null
-const root = document.getElementById('root')
+const SKEY='atarsa-profile'
+const empty={ad:'',soyad:'',katilisTarihi:'',bitisTarihi:'',izinHakki:0,egitimYeri:'',rutbe:'',ilPlaka:0}
+let profile={...empty}, session=null, tab='merkez', timer=null
 
-function dayOfYear(d){ const s = new Date(d.getFullYear(),0,0); return Math.floor((d - s)/86400000) }
-function quoteOfDay(){ return QUOTES.length ? QUOTES[dayOfYear(new Date()) % QUOTES.length] : '' }
-function attr(v){ return String(v ?? '').replace(/&/g,'&amp;').replace(/"/g,'&quot;') }
+const root=document.getElementById('root')
+const ICON={
+  home:'<path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9"/>',
+  shield:'<path d="M12 3 5 6v5c0 4.5 3 7.5 7 9 4-1.5 7-4.5 7-9V6z"/>',
+  heart:'<path d="M12 20s-7-4.4-9.2-8.3C1.1 8.5 2.6 5 6 5c2 0 3.2 1.2 4 2.3C10.8 6.2 12 5 14 5c3.4 0 4.9 3.5 3.2 6.7C19 15.6 12 20 12 20z"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/>',
+  share:'<path d="M12 16V4m0 0L8 8m4-4 4 4"/><path d="M5 13v6a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-6"/>',
+  grid:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',
+  medal:'<circle cx="12" cy="14" r="5"/><path d="M9 9 7 3h10l-2 6"/>',
+  cal:'<rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/>'
+}
+const svg=(p,s=2)=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${s}" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`
+const attr=v=>String(v??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')
+const pad=n=>String(n).padStart(2,'0')
 
-function rowToProfile(r){
-  return { ad:r.ad||'', soyad:r.soyad||'', katilisTarihi:r.katilis_tarihi||'', bitisTarihi:r.bitis_tarihi||'',
-    izinHakki:r.izin_hakki||0, egitimYeri:r.egitim_yeri||'', rutbe:r.rutbe||'', ilPlaka:r.il_plaka||0 }
-}
-function profileToRow(p){
-  return { ad:p.ad||null, soyad:p.soyad||null, katilis_tarihi:p.katilisTarihi||null, bitis_tarihi:p.bitisTarihi||null,
-    izin_hakki:p.izinHakki||0, egitim_yeri:p.egitimYeri||null, rutbe:p.rutbe||null, il_plaka:p.ilPlaka||null }
-}
+function toast(msg,type){const c=document.getElementById('toast');const t=document.createElement('div');
+  t.className='toast'+(type==='err'?' err':'');t.textContent=msg;c.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300)},2400)}
+
+function rowToProfile(r){return{ad:r.ad||'',soyad:r.soyad||'',katilisTarihi:r.katilis_tarihi||'',bitisTarihi:r.bitis_tarihi||'',
+  izinHakki:r.izin_hakki||0,egitimYeri:r.egitim_yeri||'',rutbe:r.rutbe||'',ilPlaka:r.il_plaka||0}}
+function profileToRow(p){return{ad:p.ad||null,soyad:p.soyad||null,katilis_tarihi:p.katilisTarihi||null,bitis_tarihi:p.bitisTarihi||null,
+  izin_hakki:p.izinHakki||0,egitim_yeri:p.egitimYeri||null,rutbe:p.rutbe||null,il_plaka:p.ilPlaka||null}}
 
 async function loadProfile(){
-  if (ready && session) {
-    const { data, error } = await supabase.from('profiles').select('*').eq('id', session.user.id).maybeSingle()
-    profile = (!error && data) ? rowToProfile(data) : { ...empty }
-  } else {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    profile = saved ? { ...empty, ...JSON.parse(saved) } : { ...empty }
-  }
+  if(ready&&session){
+    const{data,error}=await supabase.from('profiles').select('*').eq('id',session.user.id).maybeSingle()
+    profile=(!error&&data)?rowToProfile(data):{...empty}
+  }else{const s=localStorage.getItem(SKEY);profile=s?{...empty,...JSON.parse(s)}:{...empty}}
 }
 async function saveProfile(){
-  if (ready && session) {
-    const { error } = await supabase.from('profiles').upsert({ id: session.user.id, ...profileToRow(profile), updated_at: new Date().toISOString() })
-    if (error) throw error
-    return 'Veritabanina kaydedildi.'
+  if(ready&&session){
+    const{error}=await supabase.from('profiles').upsert({id:session.user.id,...profileToRow(profile),updated_at:new Date().toISOString()})
+    if(error)throw error;return'Veritabanina kaydedildi'
   }
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(profile))
-  return 'Tarayiciya kaydedildi.'
+  localStorage.setItem(SKEY,JSON.stringify(profile));return'Kaydedildi'
 }
 
-function countdownHTML(){
-  const a = profile.katilisTarihi, b = profile.bitisTarihi
-  if (!a || !b) return '<div class="rounded-xl border border-slate-700 bg-slate-800 p-5 text-slate-400">Sayac icin katilis ve bitis tarihini gir.</div>'
-  const start = new Date(a).getTime(), end = new Date(b).getTime(), now = Date.now()
-  const total = Math.max(end - start, 1)
-  const elapsed = Math.min(Math.max(now - start, 0), total)
-  const pct = Math.round((elapsed/total)*100)
-  const remaining = Math.max(Math.ceil((end-now)/86400000), 0)
-  return `<div class="rounded-xl border border-slate-700 bg-slate-800 p-5">
-      <div class="flex items-end justify-between">
-        <div><p class="text-xs uppercase tracking-wider text-slate-400">Kalan Gun</p>
-        <p class="text-4xl font-bold">${remaining}</p></div>
-        <p class="text-2xl font-semibold text-emerald-400">%${pct}</p>
-      </div>
-      <div class="mt-4 h-3 w-full overflow-hidden rounded-full bg-slate-700">
-        <div class="h-full rounded-full bg-emerald-500 transition-all" style="width:${pct}%"></div>
-      </div></div>`
+function compute(){
+  const a=profile.katilisTarihi,b=profile.bitisTarihi
+  if(!a||!b)return null
+  const start=new Date(a+'T00:00:00').getTime(),end=new Date(b+'T00:00:00').getTime(),now=Date.now()
+  const total=Math.max(end-start,1),rem=Math.max(end-now,0)
+  const el=Math.min(Math.max(now-start,0),total)
+  const pct=Math.min(100,Math.round(el/total*100))
+  return{days:Math.floor(rem/864e5),h:Math.floor(rem%864e5/36e5),m:Math.floor(rem%36e5/6e4),s:Math.floor(rem%6e4/1e3),
+    pct,gecen:Math.floor(el/864e5),done:rem<=0}
+}
+function fmtDate(d){if(!d)return'--';const[y,m,da]=d.split('-');return`${da}.${m}.${y}`}
+function season(d){if(!d)return'';const m=+d.split('-')[1];return m>=3&&m<=5?'İLKBAHAR':m>=6&&m<=8?'YAZ DÖNEMİ':m>=9&&m<=11?'SONBAHAR':'KIŞ DÖNEMİ'}
+function quoteOfDay(){if(!QUOTES.length)return'';const s=new Date(new Date().getFullYear(),0,0);const dy=Math.floor((Date.now()-s)/864e5);return QUOTES[dy%QUOTES.length]}
+
+function ring(pct){
+  const cx=132,cy=132,R=104,tIn=112,tOut=122,N=72
+  let ticks=''
+  for(let i=0;i<N;i++){const ang=i/N*2*Math.PI-Math.PI/2;const on=i/N<=pct/100
+    const x1=cx+tIn*Math.cos(ang),y1=cy+tIn*Math.sin(ang),x2=cx+tOut*Math.cos(ang),y2=cy+tOut*Math.sin(ang)
+    ticks+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${on?'#c9a93f':'#2c3a1f'}" stroke-width="2.4" stroke-linecap="round"/>`}
+  const C=2*Math.PI*R,dash=pct/100*C
+  const ea=-Math.PI/2+pct/100*2*Math.PI,dx=cx+R*Math.cos(ea),dy=cy+R*Math.sin(ea)
+  return`<svg viewBox="0 0 264 264">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#9a8230"/><stop offset="1" stop-color="#ecd79a"/></linearGradient></defs>
+    <g id="ticks">${ticks}</g>
+    <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#1c2615" stroke-width="9"/>
+    <circle id="arc" cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="url(#g)" stroke-width="9" stroke-linecap="round"
+      stroke-dasharray="${dash.toFixed(1)} ${(C-dash).toFixed(1)}" transform="rotate(-90 ${cx} ${cy})"/>
+    <circle id="dot" cx="${dx.toFixed(1)}" cy="${dy.toFixed(1)}" r="6" fill="#ecd79a"/>
+  </svg>`
 }
 
-function field(id,label,value,type){
-  type = type || 'text'
-  return `<div><label class="mb-1 block text-xs text-slate-400">${label}</label>
-    <input id="${id}" type="${type}" value="${attr(value)}" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-sm outline-none focus:border-emerald-500" /></div>`
+function topbar(){
+  const nm=(profile.ad||profile.soyad)?`${profile.ad} ${profile.soyad}`.trim():(session?'Asker':'Demo Asker')
+  return`<div class="topbar">
+    <div class="who"><div class="avatar">${svg(ICON.user)}<span class="dot"></span></div>
+      <div><div class="lbl up">PERSONEL</div><div class="nm">${attr(nm)}</div></div></div>
+    <div style="display:flex;gap:9px"><div class="iconbtn">${svg(ICON.share)}</div><div class="iconbtn">${svg(ICON.grid)}</div></div>
+  </div>`
 }
 
-function profileFormHTML(){
-  const rankOpts = ['<option value="">Sec...</option>'].concat(RANKS.map(r => `<option value="${attr(r)}" ${r===profile.rutbe?'selected':''}>${r}</option>`)).join('')
-  const ilOpts = ['<option value="0">Sec...</option>'].concat(PROVINCES.map(p => `<option value="${p.plaka}" ${p.plaka===profile.ilPlaka?'selected':''}>${p.plaka} - ${p.il}</option>`)).join('')
-  return `<div class="rounded-xl border border-slate-700 bg-slate-800 p-5">
-    <h2 class="mb-4 text-lg font-semibold">Bilgilerim</h2>
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      ${field('ad','Adi',profile.ad)}
-      ${field('soyad','Soyadi',profile.soyad)}
-      ${field('katilisTarihi','Katilis Tarihi',profile.katilisTarihi,'date')}
-      ${field('bitisTarihi','Bitis Tarihi',profile.bitisTarihi,'date')}
-      ${field('izinHakki','Izin Hakki (gun)',profile.izinHakki,'number')}
-      ${field('egitimYeri','Egitim Yeri',profile.egitimYeri)}
-      <div><label class="mb-1 block text-xs text-slate-400">Rutbe</label>
-        <select id="rutbe" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-sm outline-none focus:border-emerald-500">${rankOpts}</select></div>
-      <div><label class="mb-1 block text-xs text-slate-400">Il</label>
-        <select id="ilPlaka" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-sm outline-none focus:border-emerald-500">${ilOpts}</select></div>
+function merkez(){
+  const c=compute()
+  if(!c)return topbar()+`<div class="empty"><div class="b up">Sayac hazir degil</div>
+    <p class="muted">Katilis ve terhis tarihini girince geri sayim baslar.</p>
+    <button class="btn" style="max-width:240px;margin:18px auto 0" onclick="window.__go('askerim')">Bilgileri Gir</button></div>`
+  const rutbe=profile.rutbe?` · ${profile.rutbe}`:''
+  return topbar()+`
+    <div class="ringwrap">${ring(c.pct)}
+      <div class="ringcenter"><div class="top up">ŞAFAK</div>
+        <div class="big num" id="big">${c.days}</div>
+        <div class="pill up">GÜN KALDI</div></div></div>
+    <div class="hms-card"><div class="cap up">ŞAFAK ATMASINA KALAN SÜRE</div>
+      <div class="hms">
+        <div class="seg"><div class="v num" id="hh">${pad(c.h)}</div><div class="k">SAAT</div></div>
+        <div class="colon">:</div>
+        <div class="seg"><div class="v num" id="mm">${pad(c.m)}</div><div class="k">DAK</div></div>
+        <div class="colon">:</div>
+        <div class="seg"><div class="v num" id="ss">${pad(c.s)}</div><div class="k">SAN</div></div>
+      </div></div>
+    <div class="grid2">
+      <div class="mini"><div class="h up">${svg(ICON.medal)} PROGRESS</div>
+        <div class="sub up">GEÇEN GÜN${rutbe?'':''}</div><div class="val num" id="gecen">${c.gecen}</div><div class="uline"></div></div>
+      <div class="mini"><div class="h up">${svg(ICON.cal)} OBJECTIVE</div>
+        <div class="sub up">TERHİS TARİHİ</div><div class="val num small">${fmtDate(profile.bitisTarihi)}</div>
+        <div class="season">🌿 ${season(profile.bitisTarihi)}</div></div>
     </div>
-    <div class="mt-5 flex items-center justify-between">
-      <span id="status" class="text-sm text-emerald-400"></span>
-      <button id="saveBtn" class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium hover:bg-emerald-500">Kaydet</button>
-    </div></div>`
+    ${quoteOfDay()?`<div class="quote"><div class="h up">GÜNÜN SÖZÜ</div><p>${attr(quoteOfDay())}</p></div>`:''}`
 }
 
-function readForm(){
-  const g = id => document.getElementById(id)
-  profile.ad = g('ad').value
-  profile.soyad = g('soyad').value
-  profile.katilisTarihi = g('katilisTarihi').value
-  profile.bitisTarihi = g('bitisTarihi').value
-  profile.izinHakki = Number(g('izinHakki').value) || 0
-  profile.egitimYeri = g('egitimYeri').value
-  profile.rutbe = g('rutbe').value
-  profile.ilPlaka = Number(g('ilPlaka').value) || 0
+function kisla(){
+  const sel=PROVINCES.find(p=>p.plaka===profile.ilPlaka)
+  return`<div class="sec-title">Kışla</div>
+    <div class="summary">
+      <div class="s"><div class="k up">RÜTBE</div><div class="v">${profile.rutbe||'—'}</div></div>
+      <div class="s"><div class="k up">EĞİTİM YERİ</div><div class="v">${attr(profile.egitimYeri||'—')}</div></div>
+    </div>
+    <div class="card">
+      <label class="lab up">İL / PLAKA REHBERİ</label>
+      <input class="search" id="ilsearch" placeholder="İl ara..." oninput="window.__filt(this.value)"/>
+      <div class="list" id="illist">${ilRows(PROVINCES,sel)}</div>
+    </div>`
+}
+function ilRows(arr,sel){return arr.map(p=>`<div class="it${sel&&p.plaka===sel.plaka?' act':''}"><span>${p.il}</span><span class="pk">${pad(p.plaka)}</span></div>`).join('')}
+
+function askerim(){
+  const ro=['<option value="">Seç...</option>'].concat(RANKS.map(r=>`<option ${r===profile.rutbe?'selected':''}>${r}</option>`)).join('')
+  const io=['<option value="0">Seç...</option>'].concat(PROVINCES.map(p=>`<option value="${p.plaka}" ${p.plaka===profile.ilPlaka?'selected':''}>${pad(p.plaka)} - ${p.il}</option>`)).join('')
+  return`<div class="sec-title">Asker'im</div>
+    <div class="card">
+      <div class="row2">
+        <div class="field"><label class="lab up">Adı</label><input id="ad" value="${attr(profile.ad)}"/></div>
+        <div class="field"><label class="lab up">Soyadı</label><input id="soyad" value="${attr(profile.soyad)}"/></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label class="lab up">Katılış Tarihi</label><input id="katilisTarihi" type="date" value="${attr(profile.katilisTarihi)}"/></div>
+        <div class="field"><label class="lab up">Terhis Tarihi</label><input id="bitisTarihi" type="date" value="${attr(profile.bitisTarihi)}"/></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label class="lab up">İzin Hakkı (gün)</label><input id="izinHakki" type="number" value="${attr(profile.izinHakki)}"/></div>
+        <div class="field"><label class="lab up">Eğitim Yeri</label><input id="egitimYeri" value="${attr(profile.egitimYeri)}"/></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label class="lab up">Rütbe</label><select id="rutbe">${ro}</select></div>
+        <div class="field"><label class="lab up">İl</label><select id="ilPlaka">${io}</select></div>
+      </div>
+      <button class="btn" id="saveBtn" onclick="window.__save()">Kaydet</button>
+    </div>`
 }
 
-function renderDashboard(){
-  const q = quoteOfDay()
-  root.innerHTML = `
-    <header class="flex items-center justify-between border-b border-slate-700 px-6 py-4">
-      <div><h1 class="text-2xl font-bold tracking-wide">Atarsa</h1>
-      <p class="text-sm text-slate-400">Askerlik takip uygulamasi</p></div>
-      ${session ? '<button id="logoutBtn" class="rounded-lg bg-slate-700 px-3 py-1 text-sm hover:bg-slate-600">Cikis</button>' : ''}
-    </header>
-    <main class="mx-auto max-w-3xl space-y-6 px-6 py-8">
-      ${q ? `<div class="rounded-xl border border-slate-700 bg-slate-800 p-5"><p class="text-xs uppercase tracking-wider text-slate-400">Gunun Sozu</p><p class="mt-2 text-lg italic">${q}</p></div>` : ''}
-      <div id="countdown">${countdownHTML()}</div>
-      ${profileFormHTML()}
-      ${ready ? '' : '<p class="text-xs text-slate-500">Not: Supabase ayarli degil; bilgiler bu tarayicida saklaniyor.</p>'}
-    </main>`
-  const refresh = () => { readForm(); document.getElementById('countdown').innerHTML = countdownHTML() }
-  document.getElementById('katilisTarihi').addEventListener('change', refresh)
-  document.getElementById('bitisTarihi').addEventListener('change', refresh)
-  document.getElementById('saveBtn').addEventListener('click', async () => {
-    readForm()
-    const s = document.getElementById('status')
-    try { s.className='text-sm text-emerald-400'; s.textContent = await saveProfile(); document.getElementById('countdown').innerHTML = countdownHTML() }
-    catch(e){ s.className='text-sm text-red-400'; s.textContent = 'Hata: ' + (e.message || 'kaydedilemedi') }
-    setTimeout(()=>{ s.textContent='' }, 3000)
-  })
-  if (session) document.getElementById('logoutBtn').addEventListener('click', async () => { await supabase.auth.signOut() })
+function profil(){
+  const initial=((profile.ad||'A')[0]||'A').toUpperCase()
+  const email=session?session.user.email:'Misafir (yerel mod)'
+  return`<div class="sec-title">Profil</div>
+    <div class="prof-head"><div class="av num">${initial}</div>
+      <div><div style="font-size:17px;font-weight:600">${attr((profile.ad+' '+profile.soyad).trim()||'Asker')}</div>
+      <div class="muted" style="font-size:13px">${attr(email)}</div></div></div>
+    <div class="card">
+      <div class="summary" style="margin:0">
+        <div class="s"><div class="k up">DURUM</div><div class="v">${ready&&session?'Üye':'Yerel'}</div></div>
+        <div class="s"><div class="k up">İZİN HAKKI</div><div class="v">${profile.izinHakki||0} gün</div></div>
+      </div>
+      <p class="hint">Bilgilerini "Asker'im" sekmesinden düzenleyebilirsin. ${ready?'':'Supabase ayarli degil; veriler bu cihazda saklaniyor.'}</p>
+    </div>
+    ${session?`<button class="btn danger" style="margin-top:14px" id="outBtn" onclick="window.__logout()">Çıkış Yap</button>`:''}`
 }
+
+function nav(){
+  const t=(id,ic,lab)=>`<button class="tab${tab===id?' active':''}" onclick="window.__go('${id}')">${svg(ic)}<span class="up">${lab}</span></button>`
+  return`<div class="nav"><div class="nav-inner">
+    ${t('merkez',ICON.home,'Merkez')}${t('kisla',ICON.shield,'Kışla')}${t('askerim',ICON.heart,"Asker'im")}${t('profil',ICON.user,'Profil')}
+  </div></div>`
+}
+
+function renderShell(){
+  if(timer){clearInterval(timer);timer=null}
+  const body=tab==='merkez'?merkez():tab==='kisla'?kisla():tab==='askerim'?askerim():profil()
+  root.innerHTML=`<div class="app"><div class="screen">${body}</div>${nav()}</div>`
+  if(tab==='merkez'&&compute())startTick()
+}
+function startTick(){
+  timer=setInterval(()=>{
+    const c=compute();if(!c)return
+    const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v}
+    set('big',c.days);set('hh',pad(c.h));set('mm',pad(c.m));set('ss',pad(c.s));set('gecen',c.gecen)
+    const R=104,C=2*Math.PI*R,dash=c.pct/100*C,cx=132,cy=132
+    const arc=document.getElementById('arc');if(arc)arc.setAttribute('stroke-dasharray',`${dash.toFixed(1)} ${(C-dash).toFixed(1)}`)
+    const ea=-Math.PI/2+c.pct/100*2*Math.PI,dot=document.getElementById('dot')
+    if(dot){dot.setAttribute('cx',(cx+R*Math.cos(ea)).toFixed(1));dot.setAttribute('cy',(cy+R*Math.sin(ea)).toFixed(1))}
+    const tk=document.getElementById('ticks');if(tk){const tmp=document.createElement('div');tmp.innerHTML=ring(c.pct);const ng=tmp.querySelector('#ticks');if(ng)tk.innerHTML=ng.innerHTML}
+  },1000)
+}
+
+window.__go=t=>{tab=t;renderShell()}
+window.__filt=q=>{q=q.toLocaleLowerCase('tr');const sel=PROVINCES.find(p=>p.plaka===profile.ilPlaka)
+  const f=PROVINCES.filter(p=>p.il.toLocaleLowerCase('tr').includes(q));const l=document.getElementById('illist');if(l)l.innerHTML=ilRows(f,sel)}
+window.__save=async()=>{
+  const g=id=>document.getElementById(id)
+  profile.ad=g('ad').value;profile.soyad=g('soyad').value
+  profile.katilisTarihi=g('katilisTarihi').value;profile.bitisTarihi=g('bitisTarihi').value
+  profile.izinHakki=Number(g('izinHakki').value)||0;profile.egitimYeri=g('egitimYeri').value
+  profile.rutbe=g('rutbe').value;profile.ilPlaka=Number(g('ilPlaka').value)||0
+  const b=g('saveBtn');b.disabled=true;b.innerHTML='<span class="spinner"></span> Kaydediliyor...'
+  try{const m=await saveProfile();toast(m+' ✓')}catch(e){toast('Hata: '+(e.message||'kaydedilemedi'),'err')}
+  b.disabled=false;b.innerHTML='Kaydet'
+}
+window.__logout=async()=>{const b=document.getElementById('outBtn');if(b){b.disabled=true;b.innerHTML='<span class="spinner"></span> Çıkılıyor...'}
+  if(supabase)await supabase.auth.signOut()}
 
 function renderAuth(){
-  let mode = 'login'
-  function draw(msg){
-    msg = msg || ''
-    root.innerHTML = `
-    <main class="mx-auto max-w-sm px-6 py-16">
-      <h1 class="mb-1 text-2xl font-bold tracking-wide">Atarsa</h1>
-      <p class="mb-6 text-sm text-slate-400">${mode==='login'?'Giris yap':'Kayit ol'}</p>
-      <div class="space-y-3 rounded-xl border border-slate-700 bg-slate-800 p-6">
-        <input id="email" type="email" placeholder="E-posta" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-sm outline-none focus:border-emerald-500" />
-        <input id="password" type="password" placeholder="Sifre" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-sm outline-none focus:border-emerald-500" />
-        <button id="go" class="w-full rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium hover:bg-emerald-500">${mode==='login'?'Giris Yap':'Kayit Ol'}</button>
-        ${msg?`<p class="text-sm text-amber-400">${msg}</p>`:''}
-        <button id="toggle" class="w-full text-sm text-slate-400 hover:text-slate-200">${mode==='login'?'Hesabin yok mu? Kayit ol':'Zaten hesabin var mi? Giris yap'}</button>
-      </div></main>`
-    document.getElementById('go').addEventListener('click', submit)
-    document.getElementById('password').addEventListener('keydown', e => { if(e.key==='Enter') submit() })
-    document.getElementById('toggle').addEventListener('click', () => { mode = mode==='login'?'signup':'login'; draw() })
+  let mode='login'
+  function draw(msg,cls){
+    root.innerHTML=`<div class="auth">
+      <div class="brand">ATARSA</div>
+      <div class="brand-sub">Asker ve Yaren'lerinin buluşma noktası</div>
+      <div class="tabsw"><button id="mLogin" class="${mode==='login'?'on':''}">Giriş Yap</button><button id="mReg" class="${mode==='signup'?'on':''}">Kayıt Ol</button></div>
+      <div class="card">
+        <div class="field"><label class="lab up">E-posta</label><input id="email" type="email" placeholder="ornek@mail.com"/></div>
+        <div class="field"><label class="lab up">Şifre</label><input id="password" type="password" placeholder="••••••••"/></div>
+        <button class="btn" id="go">${mode==='login'?'Giriş Yap':'Kayıt Ol'}</button>
+        ${msg?`<div class="msg ${cls||''}">${msg}</div>`:''}
+      </div></div>`
+    document.getElementById('mLogin').onclick=()=>{mode='login';draw()}
+    document.getElementById('mReg').onclick=()=>{mode='signup';draw()}
+    document.getElementById('go').onclick=submit
+    document.getElementById('password').onkeydown=e=>{if(e.key==='Enter')submit()}
   }
   async function submit(){
-    const email = document.getElementById('email').value
-    const password = document.getElementById('password').value
-    try {
-      if (mode==='signup'){ const { error } = await supabase.auth.signUp({ email, password }); if (error) throw error; draw('Kayit olustu. E-postani dogrula, sonra giris yap.') }
-      else { const { error } = await supabase.auth.signInWithPassword({ email, password }); if (error) throw error }
-    } catch(e){ draw(e.message || 'Hata olustu.') }
+    const email=document.getElementById('email').value.trim()
+    const password=document.getElementById('password').value
+    const b=document.getElementById('go')
+    if(!email||!password){draw('E-posta ve şifre gerekli.','err');return}
+    b.disabled=true;b.innerHTML='<span class="spinner"></span> '+(mode==='login'?'Giriş yapılıyor...':'Kayıt olunuyor...')
+    try{
+      if(mode==='signup'){
+        const{error}=await supabase.auth.signUp({email,password,options:{emailRedirectTo:SITE_URL}})
+        if(error)throw error
+        draw('Kayıt alındı. E-postanı doğrula, sonra giriş yap.','ok')
+      }else{
+        const{error}=await supabase.auth.signInWithPassword({email,password})
+        if(error)throw error
+      }
+    }catch(e){draw(e.message||'Bir hata oluştu.','err')}
   }
   draw()
 }
 
 async function render(){
-  if (ready && !session) { renderAuth(); return }
+  if(ready&&!session){renderAuth();return}
   await loadProfile()
-  renderDashboard()
+  renderShell()
 }
-
-if (ready) {
-  const { data } = await supabase.auth.getSession()
-  session = data.session
-  supabase.auth.onAuthStateChange(async (_e, s) => { session = s; await render() })
+if(ready){
+  const{data}=await supabase.auth.getSession()
+  session=data.session
+  supabase.auth.onAuthStateChange(async(_e,s)=>{const had=!!session;session=s;tab='merkez';await render();if(s&&!had)toast('Hoş geldin 👋')})
 }
 await render()
 </script>
